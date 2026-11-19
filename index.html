@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>숙성 · 옛 술과 위스키를 파는 곳</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700;900&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--black:#151414;--panel:#1d1b1b;--line:#2f2b2a;--red:#7a0f1a;--red-d:#4d0911;--gold:#c9a45c;--text:#ece6dc;--mute:#a79f94;--serif:'Noto Serif KR',serif;--sans:'Noto Sans KR',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--text);font-family:var(--sans);line-height:1.7}
+img{display:block;max-width:100%}
+button{font:inherit;cursor:pointer;border:0;color:inherit;background:none}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+.btn{display:inline-block;padding:12px 26px;background:var(--red);color:#fff;font-weight:700;border-radius:2px;transition:background .2s}
+.btn:hover{background:#98141f}
+.btn.ghost{background:none;border:1px solid var(--gold);color:var(--gold)}
+.btn.ghost:hover{background:var(--gold);color:var(--black)}
+/* header */
+header{position:sticky;top:0;z-index:50;background:rgba(21,20,20,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
+.logo{font-family:var(--serif);font-weight:900;font-size:26px;letter-spacing:.12em}
+.logo small{display:block;font-family:var(--sans);font-weight:400;font-size:11px;letter-spacing:.2em;color:var(--gold);margin-top:-6px}
+nav{display:flex;gap:28px;font-size:15px}
+nav a:hover{color:var(--gold)}
+.hr{display:flex;align-items:center;gap:14px;font-size:14px}
+.cartbtn{position:relative;padding:8px 14px;border:1px solid var(--line);border-radius:2px}
+.cartbtn b{background:var(--red);color:#fff;border-radius:10px;padding:0 7px;margin-left:6px;font-size:12px}
+.me{color:var(--gold)}
+/* hero */
+.hero{position:relative;height:min(78vh,680px);min-height:460px;overflow:hidden;background:#000}
+.slide{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease}
+.slide.on{opacity:1}
+.slide img{width:100%;height:100%;object-fit:cover}
+.slide::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(21,20,20,.92) 0%,rgba(21,20,20,.55) 45%,transparent 75%)}
+.cap{position:absolute;z-index:2;left:max(24px,calc((100% - 1200px)/2 + 24px));top:50%;transform:translateY(-50%);max-width:520px}
+.cap h1{font-family:var(--serif);font-weight:900;font-size:clamp(32px,5vw,56px);line-height:1.25;margin-bottom:16px}
+.cap p{color:var(--mute);margin-bottom:28px;font-size:17px}
+.dots{position:absolute;z-index:3;left:50%;bottom:24px;transform:translateX(-50%);display:flex;gap:10px}
+.dots button{width:34px;height:4px;background:#ffffff40}
+.dots button.on{background:var(--gold)}
+.arrow{position:absolute;z-index:3;top:50%;transform:translateY(-50%);width:44px;height:44px;background:#00000080;border:1px solid #ffffff30;font-size:20px}
+.arrow.l{right:76px}.arrow.r{right:24px}
+/* notice */
+.notice{background:var(--red-d);border-block:1px solid var(--red)}
+.notice .wrap{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;padding-block:22px}
+.notice h3{font-family:var(--serif);font-size:17px;color:var(--gold)}
+.notice p{font-size:14px;color:#d9cfc2}
+/* sections */
+section{padding:84px 0}
+.sh{display:flex;justify-content:space-between;align-items:end;margin-bottom:34px;gap:16px;flex-wrap:wrap}
+.sh h2{font-family:var(--serif);font-weight:900;font-size:34px}
+.sh p{color:var(--mute)}
+.tabs{display:flex;gap:8px}
+.tabs button{padding:8px 20px;border:1px solid var(--line);border-radius:2px;color:var(--mute)}
+.tabs button.on{background:var(--red);border-color:var(--red);color:#fff}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+.card{background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column}
+.card .ph{overflow:hidden;aspect-ratio:16/10;background:#0d0c0c}
+.card img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.card:hover img{transform:scale(1.04)}
+.card .in{padding:18px;display:flex;flex-direction:column;gap:6px;flex:1}
+.tag{font-size:12px;color:var(--gold)}
+.card h3{font-family:var(--serif);font-size:18px;line-height:1.4}
+.card p{font-size:13px;color:var(--mute);flex:1}
+.price{font-weight:700;font-size:18px}
+.price small{color:var(--gold);font-weight:400;font-size:12px;margin-left:6px}
+.card .btn{width:100%;margin-top:8px;text-align:center}
+/* membership */
+#member{background:linear-gradient(180deg,var(--black),#1b0a0d)}
+.tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.tier{border:1px solid var(--line);padding:28px 22px;background:var(--panel)}
+.tier h3{font-family:var(--serif);font-size:22px;margin-bottom:4px}
+.tier .rate{font-size:40px;font-family:var(--serif);font-weight:900;color:var(--gold)}
+.tier ul{list-style:none;font-size:14px;color:var(--mute);margin-top:10px}
+.tier li{padding:6px 0;border-top:1px solid var(--line)}
+.tier.cur{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold)}
+.mybox{margin-top:30px;padding:22px 26px;border:1px solid var(--red);background:var(--red-d);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+/* story */
+.story{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.story img{border:1px solid var(--line);aspect-ratio:16/10;object-fit:cover;width:100%}
+.story h2{font-family:var(--serif);font-size:34px;margin-bottom:16px;line-height:1.35}
+.story p{color:var(--mute);margin-bottom:14px}
+footer{border-top:1px solid var(--line);padding:40px 0;color:var(--mute);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+/* drawer + modal */
+.veil{position:fixed;inset:0;background:#000a;z-index:90;display:none}
+.veil.on{display:block}
+.drawer{position:fixed;top:0;right:-440px;width:min(420px,100%);height:100%;background:var(--panel);z-index:100;transition:right .3s;padding:24px;display:flex;flex-direction:column;border-left:1px solid var(--line)}
+.drawer.on{right:0}
+.drawer h3,.modal h3{font-family:var(--serif);font-size:22px;margin-bottom:14px}
+.items{flex:1;overflow:auto}
+.it{display:grid;grid-template-columns:64px 1fr auto;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);align-items:center;font-size:14px}
+.it img{width:64px;height:76px;object-fit:cover}
+.qty{display:flex;gap:8px;align-items:center;margin-top:4px}
+.qty button{width:24px;height:24px;border:1px solid var(--line)}
+.sum{padding-top:16px;font-size:14px}
+.sum div{display:flex;justify-content:space-between;padding:3px 0}
+.sum .t{font-size:19px;font-weight:700;color:var(--gold)}
+.modal{position:fixed;z-index:110;left:50%;top:50%;transform:translate(-50%,-50%);width:min(480px,94%);max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--line);padding:30px;display:none}
+.modal.on{display:block}
+.modal label{display:block;font-size:13px;color:var(--mute);margin:12px 0 4px}
+.modal input,.modal select{width:100%;padding:11px 12px;background:var(--black);border:1px solid var(--line);color:var(--text);font:inherit}
+.modal .btn{width:100%;margin-top:18px}
+.x{position:absolute;right:14px;top:10px;font-size:24px;color:var(--mute)}
+.row{display:flex;gap:8px}
+.chk{display:flex;gap:8px;align-items:flex-start;font-size:13px;color:var(--mute);margin-top:12px}
+.chk input{width:auto;margin-top:5px}
+.err{color:#ff7b7b;font-size:13px;min-height:20px;margin-top:8px}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(20px);background:var(--gold);color:#111;padding:12px 22px;font-weight:700;z-index:200;opacity:0;transition:.3s;pointer-events:none}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.age{z-index:300;text-align:center}
+.done{text-align:center}
+.done .big{font-family:var(--serif);font-size:26px;color:var(--gold);margin:6px 0 10px}
+@media(max-width:960px){.grid,.tiers{grid-template-columns:repeat(2,1fr)}.story,.notice .wrap{grid-template-columns:1fr}nav{display:none}}
+@media(max-width:520px){.grid,.tiers{grid-template-columns:1fr}.arrow{display:none}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a href="#top" class="logo">숙성<small>AGED SPIRITS</small></a>
+    <nav>
+      <a href="#shop">전체 상품</a>
+      <a href="#shop" data-go="위스키">위스키</a>
+      <a href="#shop" data-go="전통주">옛 술</a>
+      <a href="#member">멤버십</a>
+      <a href="#story">이야기</a>
+    </nav>
+    <div class="hr">
+      <span class="me" id="me"></span>
+      <button id="authBtn">로그인 / 회원가입</button>
+      <button class="cartbtn" id="cartBtn">장바구니<b id="cnt">0</b></button>
+    </div>
+  </div>
+</header>
+
+<div class="hero" id="top">
+  <div class="slide on"><img src="img/p1.webp" alt="얼음을 넣은 위스키 한 잔">
+    <div class="cap"><h1>결제하면 잔까지<br>한 번에 도착합니다</h1><p>위스키는 결제 즉시 출발해 전용 잔과 함께 배송됩니다. 받자마자 한 잔 하세요.</p><a href="#shop" class="btn" data-go="위스키">위스키 보러가기</a></div></div>
+  <div class="slide"><img src="img/p5.webp" alt="보름달과 옹기 항아리">
+    <div class="cap"><h1>달빛 아래 익은<br>옛 술</h1><p>항아리에서 오래 빚은 막걸리, 약주, 증류식 소주를 전국 양조장에서 모았습니다.</p><a href="#shop" class="btn" data-go="전통주">옛 술 보러가기</a></div></div>
+  <div class="slide"><img src="img/p8.webp" alt="선반에 놓인 술병들">
+    <div class="cap"><h1>마실수록 쌓이는<br>멤버십 포인트</h1><p>등급에 따라 최대 5% 적립. 가입만 해도 3,000P를 드립니다.</p><a href="#member" class="btn ghost">등급 혜택 보기</a></div></div>
+  <div class="slide"><img src="img/p2.webp" alt="오크 숙성 통">
+    <div class="cap"><h1>오크통에서<br>12년을 기다린 맛</h1><p>숙성 연수와 캐스크 종류를 상품마다 자세히 적었습니다.</p><a href="#shop" class="btn" data-go="위스키">숙성 위스키 고르기</a></div></div>
+  <button class="arrow l" id="prev" aria-label="이전 이미지">‹</button>
+  <button class="arrow r" id="next" aria-label="다음 이미지">›</button>
+  <div class="dots" id="dots"></div>
+</div>
+
+<div class="notice"><div class="wrap">
+  <div><h3>위스키 즉시 배송</h3><p>결제 직후 출발, 전용 잔을 함께 보냅니다.</p></div>
+  <div><h3>포인트 적립</h3><p>구매 금액의 1~5%를 등급별로 적립합니다.</p></div>
+  <div><h3>성인 인증</h3><p>만 19세 이상만 가입하고 구매할 수 있습니다.</p></div>
+</div></div>
+
+<section id="shop"><div class="wrap">
+  <div class="sh">
+    <div><h2>오늘의 술</h2><p>위스키와 옛 술을 한곳에서 고르세요.</p></div>
+    <div class="tabs" id="tabs"><button class="on" data-c="전체">전체</button><button data-c="위스키">위스키</button><button data-c="전통주">옛 술</button></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</div></section>
+
+<section id="member"><div class="wrap">
+  <div class="sh"><div><h2>멤버십 등급</h2><p>누적 구매 금액에 따라 등급이 오르고, 적립률도 높아집니다.</p></div></div>
+  <div class="tiers" id="tiers"></div>
+  <div class="mybox" id="mybox"></div>
+</div></section>
+
+<section id="story"><div class="wrap story">
+  <img src="img/p5.webp" alt="달빛과 옹기 항아리">
+  <div>
+    <h2>오래 둘수록<br>깊어지는 술</h2>
+    <p>옹기 속에서 익어 가는 막걸리와 약주, 오크통 안에서 색이 짙어지는 위스키. 둘 다 시간이 만드는 술입니다.</p>
+    <p>숙성은 양조장 직접 계약과 보관 온도 관리를 거쳐 가장 좋은 상태로 보내 드립니다.</p>
+    <a href="#shop" class="btn ghost">상품 둘러보기</a>
+  </div>
+</div></section>
+
+<footer><div class="wrap">
+  <div>숙성 · 대표 홍길동 · 사업자등록번호 000-00-00000 · 통신판매업 신고 0000-경기화성-0000</div>
+  <div>미성년자에게 술을 판매하지 않습니다. 과도한 음주는 건강을 해칩니다.</div>
+</div></footer>
+
+<div class="veil" id="veil"></div>
+
+<aside class="drawer" id="drawer" aria-label="장바구니">
+  <button class="x" data-close>×</button>
+  <h3>장바구니</h3>
+  <div class="items" id="items"></div>
+  <div class="sum" id="sum"></div>
+  <button class="btn" id="goPay">결제하기</button>
+</aside>
+
+<div class="modal" id="authM">
+  <button class="x" data-close>×</button>
+  <div class="tabs" style="margin-bottom:10px"><button class="on" data-t="login">로그인</button><button data-t="join">회원가입</button></div>
+  <div id="authBody"></div>
+</div>
+
+<div class="modal" id="payM">
+  <button class="x" data-close>×</button>
+  <div id="payBody"></div>
+</div>
+
+<div class="modal age" id="ageM">
+  <h3>성인 인증</h3>
+  <p style="color:var(--mute)">이 사이트는 만 19세 이상만 이용할 수 있습니다.</p>
+  <div class="row"><button class="btn" id="ageYes">만 19세 이상입니다</button></div>
+  <a href="https://www.google.com" style="display:block;margin-top:14px;color:var(--mute);font-size:13px">아니요, 나가기</a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===== 데이터 ===== */
+const PRODUCTS=[
+ {id:1,n:'싱글몰트 12년 700ml',c:'위스키',p:89000,i:'p1',x:'50%',d:'셰리 캐스크 12년 숙성. 건과일과 바닐라 향.'},
+ {id:2,n:'블렌디드 스카치 21년',c:'위스키',p:168000,i:'p2',x:'44%',d:'부드러운 꿀과 오크 향이 오래 남습니다.'},
+ {id:3,n:'켄터키 버번 캐스크 스트렝스',c:'위스키',p:76000,i:'p3',x:'68%',d:'원액 도수 그대로. 진한 캐러멜과 스파이스.'},
+ {id:7,n:'아이리시 트리플 캐스크',c:'위스키',p:59000,i:'p7',x:'50%',d:'세 가지 통을 거쳐 가볍고 달콤합니다.'},
+ {id:4,n:'안동소주 45도',c:'전통주',p:45000,i:'p4',x:'50%',d:'쌀을 단식 증류한 옛 방식 소주.'},
+ {id:5,n:'항아리 생막걸리 6도',c:'전통주',p:24000,i:'p5',x:'50%',d:'옹기에서 발효한 걸쭉하고 달큰한 맛.'},
+ {id:6,n:'청주 약주 15도',c:'전통주',p:52000,i:'p6',x:'50%',d:'맑게 거른 쌀 약주. 은은한 단맛.'},
+ {id:8,n:'매실 숙성주 14도',c:'전통주',p:33000,i:'p8',x:'35%',d:'1년 숙성한 매실의 새콤한 향.'}
+];
+const TIERS=[
+ {n:'브론즈',min:0,r:1,b:['가입 포인트 3,000P','누적 0원 이상']},
+ {n:'실버',min:100000,r:2,b:['누적 10만원 이상','생일 쿠폰 5,000원']},
+ {n:'골드',min:300000,r:3,b:['누적 30만원 이상','무료 배송']},
+ {n:'블랙',min:700000,r:5,b:['누적 70만원 이상','한정 병 우선 구매']}
+];
+const won=n=>n.toLocaleString('ko-KR')+'원';
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={get:(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(e){return d}},set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+let users=store.get('users',{}), session=store.get('session',null), cart=store.get('cart',{}), cat='전체';
+const tierOf=u=>[...TIERS].reverse().find(t=>u.spent>=t.min);
+
+/* ===== 히어로 슬라이드 ===== */
+const slides=$$('.slide'); let si=0, timer;
+slides.forEach((_,i)=>{const b=document.createElement('button');b.setAttribute('aria-label',(i+1)+'번째 이미지');b.onclick=()=>show(i);$('#dots').append(b)});
+function show(i){si=(i+slides.length)%slides.length;slides.forEach((s,k)=>s.classList.toggle('on',k===si));$$('#dots button').forEach((d,k)=>d.classList.toggle('on',k===si));clearInterval(timer);timer=setInterval(()=>show(si+1),5500)}
+$('#prev').onclick=()=>show(si-1);$('#next').onclick=()=>show(si+1);show(0);
+
+/* ===== 상품 ===== */
+function renderGrid(){
+  const rate=session?tierOf(users[session]).r:1;
+  $('#grid').innerHTML=PRODUCTS.filter(p=>cat==='전체'||p.c===cat).map(p=>`
+  <article class="card"><div class="ph"><img src="img/${p.i}.webp" alt="${p.n}"></div>
+  <div class="in"><span class="tag">${p.c==='위스키'?'위스키 · 잔 포함 즉시 배송':'전통주'}</span><h3>${p.n}</h3><p>${p.d}</p>
+  <div class="price">${won(p.p)}<small>${rate}% 적립</small></div>
+  <button class="btn" data-add="${p.id}">장바구니 담기</button></div></article>`).join('');
+}
+$('#tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;cat=b.dataset.c;$$('#tabs button').forEach(x=>x.classList.toggle('on',x===b));renderGrid()};
+$$('[data-go]').forEach(a=>a.addEventListener('click',()=>{cat=a.dataset.go;$$('#tabs button').forEach(x=>x.classList.toggle('on',x.dataset.c===cat));renderGrid()}));
+$('#grid').onclick=e=>{const b=e.target.closest('[data-add]');if(!b)return;const id=b.dataset.add;cart[id]=(cart[id]||0)+1;saveCart();toast('장바구니에 담았습니다')};
+
+/* ===== 장바구니 ===== */
+function saveCart(){store.set('cart',cart);renderCart()}
+const lines=()=>Object.entries(cart).map(([id,q])=>({p:PRODUCTS.find(x=>x.id==id),q})).filter(l=>l.p);
+const subtotal=()=>lines().reduce((s,l)=>s+l.p.p*l.q,0);
+const shipFee=()=>{const s=subtotal();if(!s)return 0;const t=session?tierOf(users[session]).n:'';return(s>=50000||t==='골드'||t==='블랙')?0:3000};
+function renderCart(){
+  const ls=lines();$('#cnt').textContent=ls.reduce((s,l)=>s+l.q,0);
+  $('#items').innerHTML=ls.length?ls.map(l=>`<div class="it"><img src="img/${l.p.i}.webp" alt="" style="object-position:${l.p.x} 50%"><div>${l.p.n}<div class="qty"><button data-q="${l.p.id}" data-d="-1">−</button>${l.q}<button data-q="${l.p.id}" data-d="1">+</button></div></div><div>${won(l.p.p*l.q)}</div></div>`).join(''):'<p style="color:var(--mute)">담긴 상품이 없습니다. 마음에 드는 술을 담아 보세요.</p>';
+  $('#sum').innerHTML=`<div><span>상품 금액</span><span>${won(subtotal())}</span></div><div><span>배송비 (5만원 이상 무료)</span><span>${won(shipFee())}</span></div><div class="t"><span>합계</span><span>${won(subtotal()+shipFee())}</span></div>`;
+}
+$('#items').onclick=e=>{const b=e.target.closest('[data-q]');if(!b)return;const id=b.dataset.q;cart[id]+=+b.dataset.d;if(cart[id]<=0)delete cart[id];saveCart()};
+
+/* ===== 열기/닫기 ===== */
+function open(el){$('#veil').classList.add('on');el.classList.add('on')}
+function closeAll(){$('#veil').classList.remove('on');$$('.drawer,.modal:not(.age)').forEach(e=>e.classList.remove('on'))}
+$('#veil').onclick=closeAll;$$('[data-close]').forEach(b=>b.onclick=closeAll);
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
+$('#cartBtn').onclick=()=>open($('#drawer'));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setTimeout(()=>t.classList.remove('on'),2200)}
+
+/* ===== 성인 확인 ===== */
+if(!store.get('adult',false)){$('#veil').style.zIndex=250;$('#veil').classList.add('on');$('#ageM').classList.add('on')}
+$('#ageYes').onclick=()=>{store.set('adult',true);$('#ageM').classList.remove('on');$('#veil').classList.remove('on');$('#veil').style.zIndex=''};
+
+/* ===== 로그인 / 회원가입 ===== */
+let authTab='login';
+function renderAuth(){
+  $('#authBody').innerHTML=authTab==='login'?`
+   <label>아이디</label><input id="lid" autocomplete="username"><label>비밀번호</label><input id="lpw" type="password" autocomplete="current-password">
+   <div class="err" id="aerr"></div><button class="btn" id="doLogin">로그인</button>`:`
+   <label>아이디 (영문·숫자 4자 이상)</label><input id="jid"><label>비밀번호 (6자 이상)</label><input id="jpw" type="password" autocomplete="new-password">
+   <label>이름</label><input id="jnm"><label>생년월일</label><input id="jbd" type="date">
+   <label class="chk"><input type="checkbox" id="jag"> 이용약관과 개인정보 수집에 동의합니다. (필수)</label>
+   <div class="err" id="aerr"></div><button class="btn" id="doJoin">가입하고 3,000P 받기</button>`;
+  $$('#authM .tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===authTab));
+}
+$('#authM .tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;authTab=b.dataset.t;renderAuth()};
+$('#authBtn').onclick=()=>{if(session){if(confirm('로그아웃 할까요?')){session=null;store.set('session',null);refresh()}}else{authTab='login';renderAuth();open($('#authM'))}};
+$('#authBody').onclick=e=>{
+  const err=m=>$('#aerr').textContent=m;
+  if(e.target.id==='doLogin'){const id=$('#lid').value.trim(),u=users[id];if(!u||u.pw!==$('#lpw').value)return err('아이디 또는 비밀번호가 맞지 않습니다.');session=id;store.set('session',id);closeAll();refresh();toast(u.name+'님, 환영합니다')}
+  if(e.target.id==='doJoin'){
+    const id=$('#jid').value.trim(),pw=$('#jpw').value,nm=$('#jnm').value.trim(),bd=$('#jbd').value;
+    if(!/^[A-Za-z0-9]{4,}$/.test(id))return err('아이디는 영문·숫자 4자 이상으로 입력하세요.');
+    if(users[id])return err('이미 사용 중인 아이디입니다.');
+    if(pw.length<6)return err('비밀번호는 6자 이상이어야 합니다.');
+    if(!nm||!bd)return err('이름과 생년월일을 입력하세요.');
+    const t=new Date(),b=new Date(bd);let age=t.getFullYear()-b.getFullYear();if(t<new Date(t.getFullYear(),b.getMonth(),b.getDate()))age--;
+    if(age<19)return err('만 19세 이상만 가입할 수 있습니다.');
+    if(!$('#jag').checked)return err('약관에 동의해 주세요.');
+    users[id]={pw,name:nm,points:3000,spent:0,orders:[]};store.set('users',users);session=id;store.set('session',id);closeAll();refresh();toast('가입 완료! 3,000P가 적립되었습니다');
+  }
+};
+
+/* ===== 결제 ===== */
+$('#goPay').onclick=()=>{
+  if(!lines().length)return toast('장바구니가 비어 있습니다');
+  if(!session){closeAll();authTab='login';renderAuth();open($('#authM'));return toast('로그인 후 결제할 수 있습니다')}
+  const u=users[session],hasW=lines().some(l=>l.p.c==='위스키'),max=Math.min(u.points,subtotal());
+  $('#payBody').innerHTML=`<h3>주문 / 결제</h3>
+  <label>받는 분</label><input id="pn" value="${u.name}"><label>연락처</label><input id="pt" placeholder="010-0000-0000"><label>배송지</label><input id="pa" placeholder="도로명 주소와 상세 주소">
+  ${hasW?'<p style="font-size:13px;color:var(--gold);margin-top:10px">위스키는 결제 즉시 출발하며 전용 잔이 함께 배송됩니다.</p>':''}
+  <label>사용할 포인트 (보유 ${u.points.toLocaleString()}P, 1,000P 단위)</label><input id="pp" type="number" min="0" max="${max}" step="1000" value="0">
+  <label>결제 수단</label><select id="pm"><option>신용·체크카드</option><option>계좌이체</option><option>간편결제</option></select>
+  <div class="sum" id="psum"></div><div class="err" id="perr"></div><button class="btn" id="pay">결제하기</button>`;
+  const calc=()=>{let pt=Math.max(0,Math.min(+$('#pp').value||0,max));pt-=pt%1000;const total=subtotal()+shipFee()-pt,rate=tierOf(u).r,earn=Math.floor(total*rate/100);
+    $('#psum').innerHTML=`<div><span>상품 + 배송</span><span>${won(subtotal()+shipFee())}</span></div><div><span>포인트 사용</span><span>-${pt.toLocaleString()}P</span></div><div class="t"><span>결제 금액</span><span>${won(total)}</span></div><div><span>적립 예정 (${tierOf(u).n} ${rate}%)</span><span>${earn.toLocaleString()}P</span></div>`;return{pt,total,earn}};
+  $('#pp').oninput=calc;calc();
+  $('#pay').onclick=()=>{
+    if(!$('#pt').value.trim()||!$('#pa').value.trim())return $('#perr').textContent='연락처와 배송지를 입력하세요.';
+    const {pt,total,earn}=calc(),before=tierOf(u).n;
+    u.points=u.points-pt+earn;u.spent+=total;u.orders.push({at:Date.now(),total,items:lines().map(l=>l.p.n+' x'+l.q)});
+    store.set('users',users);cart={};saveCart();
+    const after=tierOf(u).n;
+    $('#payBody').innerHTML=`<div class="done"><div class="big">결제가 완료되었습니다</div><p>${won(total)} 결제 · ${earn.toLocaleString()}P 적립</p>
+    ${hasW?'<p style="margin-top:12px">위스키는 지금 바로 출발합니다.<br>전용 잔과 함께 도착합니다.</p>':''}
+    ${after!==before?`<p style="margin-top:12px;color:var(--gold)">${after} 등급으로 올라갔습니다!</p>`:''}
+    <button class="btn" data-close style="margin-top:20px">닫기</button></div>`;
+    $('#payBody [data-close]').onclick=closeAll;refresh();
+  };
+  closeAll();open($('#payM'));
+};
+
+/* ===== 멤버십 표시 ===== */
+function renderMember(){
+  const u=session&&users[session],cur=u&&tierOf(u);
+  $('#tiers').innerHTML=TIERS.map(t=>`<div class="tier ${cur&&cur.n===t.n?'cur':''}"><h3>${t.n}</h3><div class="rate">${t.r}%</div><span style="color:var(--mute);font-size:13px">구매 금액 적립</span><ul>${t.b.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('');
+  if(!u){$('#mybox').innerHTML='<div>로그인하면 내 등급과 포인트를 볼 수 있습니다.</div><button class="btn" id="mj">로그인 / 가입</button>';$('#mj').onclick=()=>{authTab='join';renderAuth();open($('#authM'))};return}
+  const nx=TIERS.find(t=>t.min>u.spent);
+  $('#mybox').innerHTML=`<div><b style="font-family:var(--serif);font-size:20px">${u.name}님 · ${cur.n}</b><br><span style="color:#d9cfc2">보유 포인트 ${u.points.toLocaleString()}P · 누적 ${won(u.spent)}${nx?` · ${nx.n}까지 ${won(nx.min-u.spent)}`:' · 최고 등급입니다'}</span></div>`;
+}
+function refresh(){
+  $('#authBtn').textContent=session?'로그아웃':'로그인 / 회원가입';
+  $('#me').textContent=session?`${tierOf(users[session]).n} · ${users[session].points.toLocaleString()}P`:'';
+  renderGrid();renderMember();renderCart();
+}
+refresh();
+</script>
+</body>
+</html>
