@@ -134,6 +134,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
       <a href="#story">이야기</a>
     </nav>
     <div class="hr">
+      <a id="adminLink" href="admin.html" style="display:none;color:var(--gold)">관리자</a>
       <span class="me" id="me"></span>
       <button id="authBtn">로그인 / 회원가입</button>
       <button class="cartbtn" id="cartBtn">장바구니<b id="cnt">0</b></button>
@@ -222,8 +223,8 @@ footer .wrap{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 
 <script>
 /* ===== Supabase 연결 값: 아래 두 줄을 내 프로젝트 값으로 바꾸세요 ===== */
-const SUPABASE_URL='https://내프로젝트.supabase.co';
-const SUPABASE_KEY='sb_publishable_내공개키';
+const SUPABASE_URL='https://fytbrrozblsxuynpmoiu.supabase.co';
+const SUPABASE_KEY='sb_publishable_4nzpEYlsEl8Lfn5X9cl7DQ_cqd7tpCh';
 const FROM_MAIL=/type=signup/.test(location.hash), MAIL_ERR=/error_code=otp_expired|error=access_denied/.test(location.hash);
 const REDIRECT=location.protocol.startsWith('http')?location.origin+location.pathname:undefined;
 const ready=/^https:\/\/[a-z0-9]+\.supabase\.co$/.test(SUPABASE_URL)&&/^sb_publishable_[\w-]+$/.test(SUPABASE_KEY)&&typeof supabase!=='undefined';
@@ -450,6 +451,7 @@ function renderMember(){
 }
 function refresh(){
   $('#authBtn').textContent=user?'로그아웃':'로그인 / 회원가입';
+  $('#adminLink').style.display=profile&&profile.role==='admin'?'':'none';
   $('#me').textContent=profile?`${tier().n} · ${profile.points.toLocaleString()}P`:'';
   renderGrid();renderMember();renderCart();
 }
