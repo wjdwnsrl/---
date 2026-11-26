@@ -269,7 +269,8 @@ async function loadProducts(){
   renderGrid();renderCart();
 }
 async function loadProfile(){
-  if(!db||!user){profile=null;spent=0;return}
+  if(!db){localLoad();return}
+  if(!user){profile=null;spent=0;return}
   let r=await db.from('shop_profiles').select('*').eq('id',user.id).maybeSingle();
   if(!r.data){await new Promise(s=>setTimeout(s,800));r=await db.from('shop_profiles').select('*').eq('id',user.id).maybeSingle()}
   profile=r.data;
@@ -321,6 +322,20 @@ function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');setT
 if(!store.get('adult',false)){$('#veil').style.zIndex=250;$('#veil').classList.add('on');$('#ageM').classList.add('on')}
 $('#ageYes').onclick=()=>{store.set('adult',true);$('#ageM').classList.remove('on');$('#veil').classList.remove('on');$('#veil').style.zIndex=''};
 
+/* ===== 체험 모드: Supabase 값이 비어 있으면 이 브라우저(localStorage)에 저장 ===== */
+const LU=()=>store.get('users',{});
+const gradeOf=sp=>[...TIERS].reverse().find(t=>sp>=t.min).k;
+function localLoad(){
+  const em=store.get('session',null),u=LU()[em];
+  if(u){user={id:em,email:em};profile={name:u.name,phone:u.phone,points:u.points,grade:gradeOf(u.spent),role:'member'};spent=u.spent}
+  else{user=null;profile=null;spent=0}
+}
+async function placeOrder(a){
+  if(db)return db.rpc('shop_place_order',a);
+  const us=LU(),u=us[user.email],total=subtotal()+shipFee()-a.p_points,earn=Math.floor(total*tier().r/100);
+  u.points=u.points-a.p_points+earn;u.spent+=total;store.set('users',us);return{error:null};
+}
+
 /* ===== 이메일 회원가입 / 로그인 (Supabase Auth) ===== */
 let authTab='login';
 function renderAuth(){
@@ -335,17 +350,17 @@ function renderAuth(){
 }
 $('#authM .tabs').onclick=e=>{const b=e.target.closest('button');if(!b)return;authTab=b.dataset.t;renderAuth()};
 $('#authBtn').onclick=async()=>{
-  if(user){if(confirm('로그아웃 할까요?')){await db.auth.signOut();toast('로그아웃되었습니다')}}
+  if(user){if(confirm('로그아웃 할까요?')){if(db)await db.auth.signOut();else{store.set('session',null);localLoad();refresh()}toast('로그아웃되었습니다')}}
   else{authTab='login';renderAuth();open($('#authM'))}
 };
 $('#authBody').onclick=async e=>{
   const id=e.target.id, err=m=>$('#aerr').textContent=m;
   if(id!=='doLogin'&&id!=='doJoin')return;
-  if(!db)return err('Supabase 연결 값(URL, 공개 키)을 index.html 맨 위에 먼저 넣어 주세요.');
   const btn=e.target;
   if(id==='doLogin'){
     const email=$('#lem').value.trim(),password=$('#lpw').value;
     if(!email||!password)return err('이메일과 비밀번호를 입력하세요.');
+    if(!db){const u=LU()[email];if(!u||u.pw!==password)return err('이메일 또는 비밀번호가 맞지 않습니다.');store.set('session',email);localLoad();closeAll();refresh();return toast('로그인되었습니다')}
     btn.disabled=true;
     const {error}=await db.auth.signInWithPassword({email,password});
     btn.disabled=false;
@@ -359,6 +374,7 @@ $('#authBody').onclick=async e=>{
     const t=new Date(),b=new Date(bd);let age=t.getFullYear()-b.getFullYear();if(t<new Date(t.getFullYear(),b.getMonth(),b.getDate()))age--;
     if(age<19)return err('만 19세 이상만 가입할 수 있습니다.');
     if(!$('#jag').checked)return err('약관에 동의해 주세요.');
+    if(!db){const us=LU();if(us[email])return err('이미 가입된 이메일입니다.');us[email]={pw:password,name,phone,points:3000,spent:0};store.set('users',us);store.set('session',email);localLoad();closeAll();refresh();return toast('가입 완료! 3,000P가 적립되었습니다')}
     btn.disabled=true;
     const {data,error}=await db.auth.signUp({email,password,options:{data:{name,phone}}});
     btn.disabled=false;
@@ -387,7 +403,7 @@ $('#goPay').onclick=()=>{
   $('#pay').onclick=async()=>{
     if(!$('#pt').value.trim()||!$('#pa').value.trim())return $('#perr').textContent='연락처와 배송지를 입력하세요.';
     const {pt,total,earn}=calc(),before=tier().n,btn=$('#pay');btn.disabled=true;
-    const {error}=await db.rpc('shop_place_order',{
+    const {error}=await placeOrder({
       p_items:lines().map(l=>({product_id:l.p.id,quantity:l.q})),p_points:pt,
       p_recipient:$('#pn').value.trim(),p_phone:$('#pt').value.trim(),p_address:$('#pa').value.trim()});
     if(error){btn.disabled=false;return $('#perr').textContent='결제에 실패했습니다: '+(/out of stock/.test(error.message)?'재고가 부족합니다.':error.message)}
@@ -415,6 +431,7 @@ function refresh(){
   $('#me').textContent=profile?`${tier().n} · ${profile.points.toLocaleString()}P`:'';
   renderGrid();renderMember();renderCart();
 }
+if(!db)localLoad();
 refresh();loadProducts();
 </script>
 </body>
